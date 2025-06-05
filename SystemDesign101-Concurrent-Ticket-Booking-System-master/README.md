@@ -213,8 +213,6 @@ This file inserts 100 random users into the `users` table.
 
 ## Troubleshooting
 
-If the program doesn't run as expected, try the following steps:
-
 1. **Check MySQL Connection**: Ensure the MySQL server is running and the connection parameters (`URL`, `USER`, `PASSWORD`) are correct.
 2. **Check Table Schema**: Ensure that the tables `trips`, `users`, and `seats` are correctly created in the database.
 3. **Concurrency Issues**: If seats are not being booked as expected, verify that the `FOR UPDATE SKIP LOCKED` SQL query is working correctly to avoid race conditions.
