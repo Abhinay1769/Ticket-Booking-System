@@ -10,43 +10,48 @@ public class NoLocking {
     // Book a seat for a user
     public static boolean bookSeat(int userId) {
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
-            String query = "SELECT seat_id, seat_name FROM seats WHERE user_id IS NULL LIMIT 1";
+            // Start a transaction
+            connection.setAutoCommit(false);
+            String query = "SELECT seat_id, seat_name FROM seats WHERE user_id IS NULL LIMIT 1 FOR UPDATE"; // Lock the row
             try (PreparedStatement stmt = connection.prepareStatement(query)) {
                 ResultSet resultSet = stmt.executeQuery();
                 if (resultSet.next()) {
                     int seatId = resultSet.getInt("seat_id");
                     String seatName = resultSet.getString("seat_name");
 
-                    // Book the seat directly, without locking or transaction management
+                    // Book the seat
                     String updateSQL = "UPDATE seats SET user_id = ? WHERE seat_id = ?";
                     try (PreparedStatement updateStmt = connection.prepareStatement(updateSQL)) {
                         updateStmt.setInt(1, userId);
                         updateStmt.setInt(2, seatId);
                         updateStmt.executeUpdate();
-                        System.out.println("User " + userId + " was assigned the seat " + seatName);
+                        System.out.println("User  " + userId + " was assigned the seat " + seatName);
+                        connection.commit(); // Commit the transaction
                         return true;
                     }
                 } else {
                     return false; // No available seats
                 }
+            } catch (SQLException e) {
+                connection.rollback(); // Rollback in case of an error
+                System.err.println("Error booking seat for user " + userId + ": " + e.getMessage());
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Database connection error: " + e.getMessage());
         }
         return false;
     }
 
     // Reset user_id to NULL after all seat bookings
-    public static void resetUserIds() {
+    public static void resetUser Ids() {
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
-            // Reset all user_id fields to NULL after all seat booking operations are complete
             String resetSQL = "UPDATE seats SET user_id = NULL";
             try (PreparedStatement resetStmt = connection.prepareStatement(resetSQL)) {
                 resetStmt.executeUpdate();
                 System.out.println("All user IDs have been reset to NULL.");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error resetting user IDs: " + e.getMessage());
         }
     }
 
@@ -77,7 +82,7 @@ public class NoLocking {
                 System.out.println(); // Newline for better readability
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error displaying seat grid: " + e.getMessage());
         }
     }
 
@@ -99,7 +104,7 @@ public class NoLocking {
         displaySeatGrid();
 
         // After all threads have completed, reset the user_ids
-        resetUserIds();  // Reset user IDs to NULL after all tasks have completed
+        resetUser Ids();  // Reset user IDs to NULL after all tasks have completed
 
         // Display seat grid after resetting user IDs
         displaySeatGrid();
