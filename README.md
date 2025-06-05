@@ -1,154 +1,106 @@
-# Ticket-Booking-System
-This project is a multi-threaded ticket booking system designed to simulate real-time seat bookings for flights while ensuring data integrity in a concurrent environment. Using Java and MySQL, the system handles seat reservations where users can concurrently attempt to book seats without conflicts.
+Ticket Booking System
+Overview
+The Ticket Booking System is a multi-threaded Java application designed to simulate real-time flight seat bookings while demonstrating the challenges and solutions of managing concurrency in a database environment. Using MySQL as the backend, this system highlights how multiple users can attempt to book seats simultaneously and how proper locking mechanisms can prevent conflicts and ensure data consistency.
 
-The core functionality relies on database locking techniques such as UPDATE locks and SKIP LOCKS to manage access to seats, ensuring that once a seat is being booked by one user, it cannot be accessed by others. The project also explores pessimistic locking methods to avoid race conditions and maintain consistency, even under high concurrency.
+Key Concepts Demonstrated
+Concurrency & Multi-threading: Utilizes Java's ExecutorService to simulate 100 concurrent users attempting to book seats.
+Database Locking Mechanisms: Shows different approaches — from no locking (worst implementation) to pessimistic locking (using FOR UPDATE) to handle concurrent updates.
+Transaction Management: Demonstrates using SQL transactions (commit & rollback) to maintain data integrity in concurrent operations.
+Data Consistency: Highlights how proper locking prevents race conditions, ensuring each seat is booked exactly once.
+Project Structure
+Class Name
 
-By simulating a scenario with 100 concurrent users, the system demonstrates the importance of proper locking mechanisms in preventing inconsistencies and ensuring a seamless user experience.
+Description
 
-Key Skills Showcased
-1. Concurrency and Multi-threading
-Managed concurrent users with multi-threading (ExecutorService) to handle seat bookings efficiently in a simulated real-world environment.
-2. Database Management and Locking Mechanisms
-Integrated MySQL for data storage and demonstrated advanced locking techniques like pessimistic locking and skip locks (FOR UPDATE SKIP LOCKED) to handle concurrent updates without conflicts.
-3. Transaction Management and Data Consistency
-Ensured data consistency with transaction management (commit, rollback) to maintain ACID properties, preventing data anomalies in a high-concurrency environment.
-Files and Order of Execution
 FlightCreator
 
-Responsible for creating the trips table and inserting flight information.
+Creates the trips table and inserts initial flight data.
+
 SeatsCreator
 
-Used for creating the seats table and initializing the seat information.
+Creates the seats table and inserts 100 seats for the flight.
+
 UserInserter
 
-Adds user information to the database for booking.
-NoLocking
+Creates the users table and inserts 100 random users.
 
-Contains a simple implementation of booking seats without any locking mechanism.
 WorstImplementation
 
-Simulates a bad implementation of seat booking without proper concurrency handling.
+Demonstrates seat booking without any concurrency control, leading to potential conflicts.
+
+NoLocking
+
+Attempts seat booking without locking, showing partial concurrency handling.
+
 TicketBookingSystem
 
-Main entry point for the ticket booking system. Handles seat booking with concurrency management.
-Execution Order
-First, run FlightCreator to set up flight data.
-Then, run SeatsCreator to set up seat data.
-Next, run UserInserter to insert user data into the database.
-After that, run WorstImplementation to simulate the booking without locks.
-Finally, run TicketBookingSystem for the main functionality with proper concurrency handling.
-Ensure that the database schema and tables are created as needed before running these implementations.
+Main application implementing proper concurrency control with pessimistic locking.
 
+Setup Instructions
 Prerequisites
-Before running the project, ensure that you have the following installed:
+Java 8 or higher
+MySQL Server installed and running
+MySQL JDBC connector added to the classpath
+Database Setup
+Create the database:
 
-Java 8+
-MySQL Server (Make sure MySQL is running locally or on a remote server)
-JDBC for MySQL (MySQL Connector)
-Setting Up the Project
-1. Create the MySQL Database
-Create a new database called TicketBookingSystem in MySQL.
-
+sql
+Run
+Copy code
 CREATE DATABASE TicketBookingSystem;
-2. Create the Tables
-2.1. Create the trips Table
-This table stores information about the flights.
+The application will create necessary tables (trips, seats, and users) automatically upon running their respective classes if they do not already exist.
 
-CREATE TABLE IF NOT EXISTS trips (
-    flight_id INT AUTO_INCREMENT PRIMARY KEY,
-    flight_name VARCHAR(100) NOT NULL
-);
-2.2. Create the users Table
-This table stores information about users who are booking seats.
+Running the Project
+Follow these steps in the given order:
 
-CREATE TABLE IF NOT EXISTS users (
-    user_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_name VARCHAR(100) NOT NULL
-);
-2.3. Create the seats Table
-This table stores information about the available seats, including which flight they belong to and the user who booked them.
+Create flights
 
-CREATE TABLE IF NOT EXISTS seats (
-    seat_id INT AUTO_INCREMENT PRIMARY KEY,
-    seat_name VARCHAR(10) NOT NULL,
-    trip_id INT NOT NULL,
-    user_id INT DEFAULT NULL,
-    FOREIGN KEY (trip_id) REFERENCES trips(flight_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE SET NULL
-);
-3. Insert Flights, Seats, and Users
-Before running the main application, you'll need to populate the database with sample flights, seats, and users.
-
-3.1. FlightCreator
-This class inserts a flight into the trips table.
-
+bash
+Run
+Copy code
 javac FlightCreator.java
 java FlightCreator
-3.2. SeatsCreator
-This class inserts 100 seats into the seats table for the flight created in the trips table.
+Create and insert seats
 
+bash
+Run
+Copy code
 javac SeatsCreator.java
 java SeatsCreator
-3.3. UserInserter
-This class inserts 100 random users into the users table.
+Create and insert users
 
+bash
+Run
+Copy code
 javac UserInserter.java
 java UserInserter
-4. TicketBookingSystem (Main Application)
-The TicketBookingSystem class is responsible for booking seats and printing the final seat assignment.
+Run worst-case booking implementation (no locking)
 
-The system uses multi-threading to allow 100 users to concurrently attempt booking seats.
-It tracks which seats are available or booked using the FOR UPDATE SKIP LOCKED SQL feature to prevent race conditions.
-After booking, it prints the seat grid and resets all seats for the next round of bookings.
-To run the main application:
+bash
+Run
+Copy code
+javac WorstImplementation.java
+java WorstImplementation
+Run main ticket booking system (with concurrency control)
 
+bash
+Run
+Copy code
 javac TicketBookingSystem.java
 java TicketBookingSystem
-5. Expected Output
-The system will print:
-
-The availability grid for all seats (Booked seats marked as X and available seats marked as -).
-The names of users who have booked each seat.
-The total number of booked seats.
-The execution time of the entire process.
-6. Resetting Seats
-The system will reset all seats to available (user_id = NULL) after completing the booking. You can manually reset seats using the resetSeats method.
-
-7. Sample Output
-Seat Availability Grid (X = Booked, - = Available):
-- - - - X - - - X - 
-- - X - X - - X X - 
-X - - X - - - - - X 
-...
-
-Seats Booked by Users:
-User 1 (1A)
-User 2 (1B)
-User 3 (2A)
-...
-
-Total Booked Seats: 100
-
-Execution Time: 1500 milliseconds
-Project Files Overview
-1. TicketBookingSystem.java
-This is the main application that manages seat bookings. It uses multi-threading to allow concurrent seat booking.
-
-2. FlightCreator.java
-This file is responsible for creating flights in the trips table.
-
-3. SeatsCreator.java
-This file creates 100 seats for the flight in the seats table.
-
-4. UserInserter.java
-This file inserts 100 random users into the users table.
-
+What to Expect
+The WorstImplementation class will likely demonstrate race conditions, leading to multiple users potentially booking the same seat.
+The TicketBookingSystem class will use pessimistic locking to prevent conflicts, ensuring that each seat is booked by only one user.
+Both correct and incorrect seat assignments are visualized via printed seat grids (X for booked, - for available).
+Execution time for the booking process is displayed for performance insights.
 Troubleshooting
-If the program doesn't run as expected, try the following steps:
-
-Check MySQL Connection: Ensure the MySQL server is running and the connection parameters (URL, USER, PASSWORD) are correct.
-Check Table Schema: Ensure that the tables trips, users, and seats are correctly created in the database.
-Concurrency Issues: If seats are not being booked as expected, verify that the FOR UPDATE SKIP LOCKED SQL query is working correctly to avoid race conditions.
-Execution Time: The execution time will depend on your system and the number of users. Make sure your machine has enough resources to handle 100 concurrent threads.
+Verify your MySQL server is running and accessible with the credentials provided in the code (URL, USER, PASSWORD).
+Ensure all tables are created correctly by running the creation scripts individually, if necessary.
+If seat bookings do not behave as expected, confirm that transactions and locking queries are supported by your MySQL version and configuration.
+Adjust thread pool size or system resources if performance degrades with 100 concurrent threads.
+Additional Notes
+This project focuses solely on the concurrent booking process using Java and MySQL. It does not include a user interface.
+Passwords and database connection details are hardcoded for demonstration purposes; consider using configuration files or environment variables for production.
+This demo uses basic locking semantics. Real-world systems may require additional optimizations such as optimistic locking, retries, or queuing mechanisms.
 Conclusion
-This project demonstrates the implementation of a ticket booking system with concurrent seat booking using multi-threading. It showcases how SQL transactions, particularly UPDATE locks and SKIP LOCKS, are utilized to ensure data consistency in a concurrent environment. The application uses pessimistic locking techniques to simulate real-world seat booking for flights, preventing race conditions and ensuring that seat availability is accurately updated across multiple threads. The integration with MySQL for managing flight, seat, and user data highlights how database locking mechanisms can be leveraged in real-world scenarios to manage concurrency effectively.
+This project elegantly illustrates the importance of handling concurrency and managing database transactions in multi-user environments. By experimenting with variations in locking mechanisms, you gain valuable insights into preventing race conditions and maintaining transactional integrity — key concepts underpinning robust, scalable software systems.
