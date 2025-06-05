@@ -1,6 +1,5 @@
 
-# Concurrent Ticket Booking System with Pessimistic Locking
-
+#  Ticket Booking System 
 ## Project Description
 
 This project is a **multi-threaded ticket booking system** designed to simulate real-time seat bookings for flights while ensuring **data integrity** in a concurrent environment. Using **Java** and **MySQL**, the system handles seat reservations where users can concurrently attempt to book seats without conflicts.
