@@ -14,8 +14,8 @@ public class TicketBookingSystem {
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
             connection.setAutoCommit(false); // Start transaction
 
-            // Skip locked rows using the `FOR UPDATE SKIP LOCKED` query
-            String query = "SELECT seat_id, seat_name FROM seats WHERE user_id IS NULL LIMIT 1 FOR UPDATE SKIP LOCKED";
+            // Select available seat and lock it
+            String query = "SELECT seat_id, seat_name FROM seats WHERE user_id IS NULL LIMIT 1 FOR UPDATE";
             try (PreparedStatement stmt = connection.prepareStatement(query)) {
                 ResultSet resultSet = stmt.executeQuery();
                 if (resultSet.next()) {
@@ -31,16 +31,17 @@ public class TicketBookingSystem {
 
                         if (rowsUpdated > 0) {
                             connection.commit(); // Commit the transaction
-                            System.out.println("User " + userId + " was assigned the seat " + seatName); // Print assignment
+                            System.out.println("User  " + userId + " was assigned the seat " + seatName); // Print assignment
                             return true; // Seat booked successfully
                         } else {
                             connection.rollback(); // Rollback if update failed
-                            System.out.println("Seat " + seatName + " is locked, skipping to the next available seat for User " + userId);
+                            System.out.println("Failed to book seat for User " + userId);
                             return false; // Failed to book seat
                         }
                     }
                 } else {
                     connection.rollback();
+                    System.out.println("No available seats for User " + userId);
                     return false; // No available seats
                 }
             }
@@ -70,15 +71,14 @@ public class TicketBookingSystem {
                 // Populate the grid with seat data
                 while (resultSet.next()) {
                     String seatName = resultSet.getString("seat_name");
-                    int userId = resultSet.getInt("user_id");
+                    Integer userId = resultSet.getObject("user_id", Integer.class);
     
                     // Extract row and column from seat_name
-                    // For example, seatName = "5C" -> row = 4 (indexing starts from 0), col = 2 (C -> 2)
                     int row = Integer.parseInt(seatName.replaceAll("[^0-9]", "")) - 1; // Extract number and subtract 1
                     int col = seatName.replaceAll("[^A-Za-z]", "").charAt(0) - 'A'; // Extract letter and convert to index
     
                     // Mark the seat as booked (X) or available (-)
-                    if (userId != 0) {
+                    if (userId != null) {
                         grid[row][col] = "X"; // Booked seat
                         bookedCount++;
                     }
@@ -100,7 +100,6 @@ public class TicketBookingSystem {
         }
     }
     
-
     // Reset all seats (user_id) to NULL after booking is complete
     public static void resetSeats() {
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
