@@ -12,28 +12,38 @@ By simulating a scenario with 100 concurrent users, the system demonstrates the 
 Files and Order of Execution
 
 1.	FlightCreator
+
 o	Responsible for creating the trips table and inserting flight information.
 
 2.	SeatsCreator
+
 o	Used for creating the seats table and initializing the seat information.
 
 3.	UserInserter
+
 o	Adds user information to the database for booking.
 
 4.	NoLocking
+
 o	Contains a simple implementation of booking seats without any locking mechanism.
 
 5.	WorstImplementation
+
 o	Simulates a bad implementation of seat booking without proper concurrency handling.
 
 6.	TicketBookingSystem
+
 o	Main entry point for the ticket booking system. Handles seat booking with concurrency management.
 
 Execution Order
 1.	First, run FlightCreator to set up flight data.
+
 2.	Then, run SeatsCreator to set up seat data.
+
 3.	Next, run UserInserter to insert user data into the database.
+
 4.	After that, run WorstImplementation to simulate the booking without locks.
+
 5.	Finally, run TicketBookingSystem for the main functionality with proper concurrency handling.
 
 
