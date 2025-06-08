@@ -84,7 +84,10 @@ Execution Time: 1500 milliseconds
 Future Improvements
 
 •	GUI Interface (Swing/JavaFX)
+
 •	Admin panel for reports
+
 •	OTP/email confirmation for bookings
+
 •	Integration with payment gateway (mocked)
 
