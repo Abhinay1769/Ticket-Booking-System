@@ -19,6 +19,29 @@ By simulating a scenario with **100 concurrent users**, the system demonstrates 
 ### 3. **Transaction Management and Data Consistency**
    - Ensured data consistency with **transaction management** (`commit`, `rollback`) to maintain ACID properties, preventing data anomalies in a high-concurrency environment.
 
+## Repository Structure
+
+Ticket-Booking-System/
+
+├── src/
+
+│   ├── FlightCreator.java
+
+│   ├── SeatsCreator.java
+
+│   ├── UserInserter.java
+
+│   ├── NoLocking.java
+
+│   ├── WorstImplementation.java
+
+│   └── TicketBookingSystem.jav
+
+├── README.md
+
+└── MySQL schema/setup scripts
+
+
 
 ## Files and Order of Execution
 
