@@ -221,6 +221,13 @@ If the program doesn't run as expected, try the following steps:
 4. **Execution Time**: The execution time will depend on your system and the number of users. Make sure your machine has enough resources to handle 100 concurrent threads.
 
 ---
+##Future Improvements
+•	**GUI Interface (Swing/JavaFX)
+•	**Admin panel for reports
+•	**OTP/email confirmation for bookings
+•	**Integration with payment gateway (mocked)
+
+
 
 ## Conclusion
 
