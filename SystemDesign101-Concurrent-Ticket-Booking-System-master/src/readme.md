@@ -1,5 +1,5 @@
 
-# Concurrent Ticket Booking System with Pessimistic Locking
+#  Ticket Booking System 
 
 ## Project Description
 
