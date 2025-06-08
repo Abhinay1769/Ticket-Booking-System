@@ -1,6 +1,6 @@
 
-#  Ticket Booking System 
 
+#  Ticket Booking System 
 ## Project Description
 
 This project is a **multi-threaded ticket booking system** designed to simulate real-time seat bookings for flights while ensuring **data integrity** in a concurrent environment. Using **Java** and **MySQL**, the system handles seat reservations where users can concurrently attempt to book seats without conflicts.
@@ -19,6 +19,29 @@ By simulating a scenario with **100 concurrent users**, the system demonstrates 
 
 ### 3. **Transaction Management and Data Consistency**
    - Ensured data consistency with **transaction management** (`commit`, `rollback`) to maintain ACID properties, preventing data anomalies in a high-concurrency environment.
+
+## Repository Structure
+
+Ticket-Booking-System/
+
+├── src/
+
+│   ├── FlightCreator.java
+
+│   ├── SeatsCreator.java
+
+│   ├── UserInserter.java
+
+│   ├── NoLocking.java
+
+│   ├── WorstImplementation.java
+
+│   └── TicketBookingSystem.jav
+
+├── README.md
+
+└── MySQL schema/setup scripts
+
 
 
 ## Files and Order of Execution
@@ -213,25 +236,12 @@ This file inserts 100 random users into the `users` table.
 
 ## Troubleshooting
 
-If the program doesn't run as expected, try the following steps:
-
 1. **Check MySQL Connection**: Ensure the MySQL server is running and the connection parameters (`URL`, `USER`, `PASSWORD`) are correct.
 2. **Check Table Schema**: Ensure that the tables `trips`, `users`, and `seats` are correctly created in the database.
 3. **Concurrency Issues**: If seats are not being booked as expected, verify that the `FOR UPDATE SKIP LOCKED` SQL query is working correctly to avoid race conditions.
 4. **Execution Time**: The execution time will depend on your system and the number of users. Make sure your machine has enough resources to handle 100 concurrent threads.
 
 ---
-## Future Improvements
-
-•	**GUI Interface (Swing/JavaFX)**
-
-•	**Admin panel for reports**
-
-•	**OTP/email confirmation for bookings**
-
-•	**Integration with payment gateway (mocked)**
-
-
 
 ## Conclusion
 
