@@ -222,9 +222,13 @@ If the program doesn't run as expected, try the following steps:
 
 ---
 ## Future Improvements
+
 •	**GUI Interface (Swing/JavaFX)**
+
 •	**Admin panel for reports**
+
 •	**OTP/email confirmation for bookings**
+
 •	**Integration with payment gateway (mocked)**
 
 
